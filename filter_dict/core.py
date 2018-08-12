@@ -9,11 +9,11 @@ Predicate = typing.Callable[[P, K, V], bool]
 _Node = typing.NamedTuple('_Node', (('path', P), ('data', typing.Mapping)))
 
 
-def _match_all(_kp: P, _k: K, _v: V) -> bool:
+def match_all(_kp: P, _k: K, _v: V) -> bool:
     return True
 
 
-def _decompose_dict(the_dict: typing.Mapping[K, V], predicate: Predicate = _match_all) \
+def _decompose_dict(predicate: Predicate, the_dict: typing.Mapping[K, V]) \
         -> typing.Generator[typing.Tuple[P, V], None, None]:
     root = chainable_iterator.ChainableIterator((_Node([], the_dict),))
     for node in root:
@@ -36,5 +36,5 @@ def _recompose_dict(items: typing.Iterator[typing.Tuple[P, V]]) -> typing.Mappin
     return the_dict
 
 
-def filter_dict(the_dict: typing.Mapping[K, V], predicate: Predicate = _match_all) -> typing.Mapping[K, V]:
-    return _recompose_dict(_decompose_dict(the_dict, predicate))
+def filter_dict(predicate: Predicate, the_dict: typing.Mapping[K, V]) -> typing.Mapping[K, V]:
+    return _recompose_dict(_decompose_dict(predicate, the_dict))
